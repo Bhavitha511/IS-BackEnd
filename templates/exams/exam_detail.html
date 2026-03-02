@@ -4,60 +4,115 @@
 {% block title %}Exam Detail{% endblock %}
 
 {% block content %}
-<h1 class="mb-3">{{ exam.course_code }} - {{ exam.course_name }}</h1>
-<p>
-  <strong>Date:</strong> {{ exam.exam_date }}<br>
-  <strong>Time:</strong> {{ exam.start_time }} - {{ exam.end_time }}<br>
-  <strong>Department:</strong> {{ exam.department.code }}<br>
-</p>
+<div class="flex flex-col gap-6">
+  <div class="flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">
+        {{ exam.course_code }} – {{ exam.course_name }}
+      </h1>
+      <dl class="mt-3 space-y-1 text-sm text-slate-700">
+        <div class="flex gap-2">
+          <dt class="w-24 text-slate-500">Date</dt>
+          <dd>{{ exam.exam_date }}</dd>
+        </div>
+        <div class="flex gap-2">
+          <dt class="w-24 text-slate-500">Time</dt>
+          <dd>{{ exam.start_time }} – {{ exam.end_time }}</dd>
+        </div>
+        <div class="flex gap-2">
+          <dt class="w-24 text-slate-500">Department</dt>
+          <dd>{{ exam.department.code }}</dd>
+        </div>
+      </dl>
+    </div>
+    <div class="flex flex-col items-stretch gap-2 text-xs sm:text-sm">
+      <a href="{% url 'exams:auto_allocate_for_exam' exam.pk %}"
+         class="inline-flex items-center justify-center rounded-md bg-emerald-600 px-3 py-1.5 font-semibold text-white shadow-sm hover:bg-emerald-700">
+        Auto-allocate invigilators
+      </a>
+      {% if has_assignments %}
+        <button type="button"
+                class="inline-flex items-center justify-center rounded-md border border-slate-300 bg-slate-100 px-3 py-1.5 font-medium text-slate-500 cursor-not-allowed"
+                title="Rooms cannot be changed after assignments are made.">
+          Assign duties (rooms locked)
+        </button>
+      {% else %}
+        <a href="{% url 'exams:configure_exam_halls' exam.pk %}"
+           class="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
+          Assign duties (select rooms)
+        </a>
+      {% endif %}
+      <a href="{% url 'exams:export_exam_allocation_csv' exam.pk %}"
+         class="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
+        Export allocation (CSV)
+      </a>
+      <a href="{% url 'exams:exam_list' %}"
+         class="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
+        Back to exams
+      </a>
+    </div>
+  </div>
 
-<div class="mb-3">
-  <a href="{% url 'exams:auto_allocate_for_exam' exam.pk %}" class="btn btn-success">Auto Allocate Invigilators</a>
-  {% if has_assignments %}
-    <button class="btn btn-outline-secondary" disabled title="Rooms cannot be changed after assignments are made.">Assign Duties (Select Rooms)</button>
-  {% else %}
-    <a href="{% url 'exams:configure_exam_halls' exam.pk %}" class="btn btn-outline-primary">Assign Duties (Select Rooms)</a>
-  {% endif %}
-  <a href="{% url 'exams:export_exam_allocation_csv' exam.pk %}" class="btn btn-outline-secondary">Export Allocation (CSV)</a>
-  <a href="{% url 'exams:exam_list' %}" class="btn btn-secondary">Back to Exams</a>
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <h2 class="mb-3 text-sm font-semibold text-slate-900">Halls &amp; assignments</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200 text-sm">
+        <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <tr>
+            <th class="px-3 py-2">Hall</th>
+            <th class="px-3 py-2">Block</th>
+            <th class="px-3 py-2">Required invigilators</th>
+            <th class="px-3 py-2">Assigned invigilators</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 bg-white">
+          {% for session in session_halls %}
+            <tr>
+              <td class="px-3 py-2 text-slate-800">{{ session.hall.name }}</td>
+              <td class="px-3 py-2 text-slate-800">{{ session.hall.block }}</td>
+              <td class="px-3 py-2 text-slate-800">{{ session.required_invigilators }}</td>
+              <td class="px-3 py-2">
+                {% with hall_key=session.hall %}
+                  {% if assignments_by_hall|dict_get:hall_key %}
+                    <ul class="space-y-1">
+                      {% for assignment in assignments_by_hall|dict_get:hall_key %}
+                        <li class="flex items-center justify-between gap-2">
+                          <div>
+                            <div class="text-sm text-slate-900">
+                              {{ assignment.faculty.user.get_full_name|default:assignment.faculty.user.username }}
+                            </div>
+                            <div class="text-xs text-slate-500">
+                              {{ assignment.faculty.department.code }}
+                            </div>
+                          </div>
+                          <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
+                            {% if assignment.status == 'PENDING_CONFIRMATION' %}bg-amber-50 text-amber-700 ring-1 ring-amber-100
+                            {% elif assignment.status == 'CONFIRMED' %}bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100
+                            {% elif assignment.status == 'DECLINED' %}bg-red-50 text-red-700 ring-1 ring-red-100
+                            {% elif assignment.status == 'CANCELLED' %}bg-slate-100 text-slate-700 ring-1 ring-slate-200
+                            {% elif assignment.status == 'REASSIGNED' %}bg-sky-50 text-sky-700 ring-1 ring-sky-100
+                            {% else %}bg-slate-50 text-slate-700 ring-1 ring-slate-100{% endif %}">
+                            {{ assignment.status|title }}
+                          </span>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% else %}
+                    <span class="text-xs text-slate-500">No assignments yet.</span>
+                  {% endif %}
+                {% endwith %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4" class="px-3 py-6 text-center text-sm text-slate-500">
+                No halls assigned for this exam.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
 </div>
-
-<h3>Halls & Assignments</h3>
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th>Hall</th>
-      <th>Block</th>
-      <th>Required Invigilators</th>
-      <th>Assigned Invigilators</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for session in session_halls %}
-      <tr>
-        <td>{{ session.hall.name }}</td>
-        <td>{{ session.hall.block }}</td>
-        <td>{{ session.required_invigilators }}</td>
-        <td>
-          {% with hall_key=session.hall %}
-            {% if assignments_by_hall|dict_get:hall_key %}
-              <ul class="mb-0">
-                {% for assignment in assignments_by_hall|dict_get:hall_key %}
-                  <li>
-                    {{ assignment.faculty.user.get_full_name|default:assignment.faculty.user.username }}
-                    ({{ assignment.faculty.department.code }}) - {{ assignment.status }}
-                  </li>
-                {% endfor %}
-              </ul>
-            {% else %}
-              <span class="text-muted">No assignments yet.</span>
-            {% endif %}
-          {% endwith %}
-        </td>
-      </tr>
-    {% empty %}
-      <tr><td colspan="4" class="text-center p-3">No halls assigned for this exam.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
 {% endblock %}

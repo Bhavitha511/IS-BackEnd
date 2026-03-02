@@ -3,100 +3,141 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<h1 class="mb-3">Admin Dashboard</h1>
-<div class="mb-4 d-flex flex-wrap gap-2">
-  <a href="{% url 'accounts:create_faculty' %}" class="btn btn-primary">Create Faculty</a>
-  <a href="{% url 'exams:manage_departments' %}" class="btn btn-outline-primary">Manage Departments</a>
-  <a href="{% url 'exams:manage_halls' %}" class="btn btn-outline-primary">Manage Blocks / Rooms</a>
-</div>
+<div class="flex flex-col gap-6">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Admin dashboard</h1>
+      <p class="mt-1 text-sm text-slate-600">
+        Overview of upcoming exams, invigilation confirmations, and key configuration areas.
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-2 text-xs sm:text-sm">
+      <a href="{% url 'accounts:create_faculty' %}"
+         class="inline-flex items-center rounded-md bg-primary-600 px-3 py-1.5 font-semibold text-white shadow-sm hover:bg-primary-700">
+        Create faculty
+      </a>
+      <a href="{% url 'exams:manage_departments' %}"
+         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
+        Manage departments
+      </a>
+      <a href="{% url 'exams:manage_halls' %}"
+         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
+        Manage blocks / rooms
+      </a>
+    </div>
+  </div>
 
-<div class="row g-3 mb-4">
-  <div class="col-md-3">
-    <div class="card text-center h-100">
-      <div class="card-body">
-        <h5 class="card-title">{{ upcoming_exams_count }}</h5>
-        <p class="card-text">Upcoming Exams</p>
-      </div>
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
+      <p class="text-xs font-medium uppercase tracking-wide text-slate-500">Upcoming exams</p>
+      <p class="mt-2 text-2xl font-semibold text-slate-900">{{ upcoming_exams_count }}</p>
+    </div>
+    <div class="rounded-xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
+      <p class="text-xs font-medium uppercase tracking-wide text-slate-500">Exams today</p>
+      <p class="mt-2 text-2xl font-semibold text-slate-900">{{ today_exams_count }}</p>
+    </div>
+    <div class="rounded-xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
+      <p class="text-xs font-medium uppercase tracking-wide text-slate-500">Pending confirmations</p>
+      <p class="mt-2 text-2xl font-semibold text-slate-900">{{ pending_assignments_count }}</p>
+    </div>
+    <div class="rounded-xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
+      <p class="text-xs font-medium uppercase tracking-wide text-slate-500">Total faculty</p>
+      <p class="mt-2 text-2xl font-semibold text-primary-600">
+        <a href="{% url 'accounts:faculty_list' %}" class="hover:underline">{{ total_faculty_count }}</a>
+      </p>
     </div>
   </div>
-  <div class="col-md-3">
-    <div class="card text-center h-100">
-      <div class="card-body">
-        <h5 class="card-title">{{ today_exams_count }}</h5>
-        <p class="card-text">Exams Today</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card text-center h-100">
-      <div class="card-body">
-        <h5 class="card-title">{{ pending_assignments_count }}</h5>
-        <p class="card-text">Pending Confirmations</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card text-center h-100">
-      <div class="card-body">
-        <h5 class="card-title">
-          <a href="{% url 'accounts:faculty_list' %}" class="text-decoration-none">{{ total_faculty_count }}</a>
-        </h5>
-        <p class="card-text">Total Faculty</p>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="mb-4">
-  <h3 class="h5 mb-3">Quick Actions</h3>
-  <div class="row g-2">
-    <div class="col-auto"><a href="{% url 'exams:upload_exam_timetable' %}" class="btn btn-primary">Upload Exam Timetable</a></div>
-    <div class="col-auto"><a href="{% url 'exams:exam_list' %}" class="btn btn-outline-secondary">Manage Exams</a></div>
-    <div class="col-auto"><a href="{% url 'exams:manage_departments' %}" class="btn btn-outline-secondary">Manage Departments</a></div>
-    <div class="col-auto"><a href="{% url 'timetable:manage_courses' %}" class="btn btn-outline-secondary">Manage Subjects/Courses</a></div>
-    <div class="col-auto"><a href="{% url 'exams:manage_halls' %}" class="btn btn-outline-secondary">Manage Halls</a></div>
-    <div class="col-auto"><a href="{% url 'exams:blocks_list' %}" class="btn btn-outline-secondary">Blocks & Rooms Overview</a></div>
-    <div class="col-auto"><a href="{% url 'accounts:create_faculty_batch' %}" class="btn btn-success">Create Faculty Profiles (Batch Mode)</a></div>
-    <div class="col-auto"><a href="{% url 'exams:pending_assignments' %}" class="btn btn-warning">Approve/Decline Duties</a></div>
-    <div class="col-auto"><a href="{% url 'leaves:leave_requests_admin' %}" class="btn btn-info">Approve/Decline Leaves</a></div>
-  </div>
-</div>
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <h2 class="mb-3 text-sm font-semibold text-slate-900">Quick actions</h2>
+    <div class="flex flex-wrap gap-2 text-xs sm:text-sm">
+      <a href="{% url 'exams:upload_exam_timetable' %}"
+         class="inline-flex items-center rounded-md bg-primary-600 px-3 py-1.5 font-semibold text-white shadow-sm hover:bg-primary-700">
+        Upload exam timetable
+      </a>
+      <a href="{% url 'exams:exam_list' %}"
+         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
+        Manage exams
+      </a>
+      <a href="{% url 'exams:manage_departments' %}"
+         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
+        Manage departments
+      </a>
+      <a href="{% url 'timetable:manage_courses' %}"
+         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
+        Manage subjects / courses
+      </a>
+      <a href="{% url 'exams:manage_halls' %}"
+         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
+        Manage halls
+      </a>
+      <a href="{% url 'exams:blocks_list' %}"
+         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
+        Blocks &amp; rooms overview
+      </a>
+      <a href="{% url 'accounts:create_faculty_batch' %}"
+         class="inline-flex items-center rounded-md bg-emerald-600 px-3 py-1.5 font-semibold text-white shadow-sm hover:bg-emerald-700">
+        Create faculty profiles (batch)
+      </a>
+      <a href="{% url 'exams:pending_assignments' %}"
+         class="inline-flex items-center rounded-md bg-amber-500 px-3 py-1.5 font-semibold text-white shadow-sm hover:bg-amber-600">
+        Approve / decline duties
+      </a>
+      <a href="{% url 'leaves:leave_requests_admin' %}"
+         class="inline-flex items-center rounded-md bg-sky-600 px-3 py-1.5 font-semibold text-white shadow-sm hover:bg-sky-700">
+        Approve / decline leaves
+      </a>
+    </div>
+  </section>
 
-<div class="mb-4">
-  <h3 class="h5 mb-3">Upcoming Exams</h3>
-  {% if upcoming_exams %}
-    <div class="table-responsive">
-      <table class="table table-striped table-hover align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Course</th>
-            <th>Department</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for exam in upcoming_exams %}
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <h2 class="mb-3 text-sm font-semibold text-slate-900">Upcoming exams</h2>
+    {% if upcoming_exams %}
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 text-sm">
+          <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
             <tr>
-              <td>{{ exam.exam_date }}</td>
-              <td>{{ exam.start_time }} - {{ exam.end_time }}</td>
-              <td>
-                {{ exam.course_code }}
-                {% if exam.course_name != exam.course_code %}<br><small class="text-muted">{{ exam.course_name }}</small>{% endif %}
-              </td>
-              <td>{{ exam.department.code }}</td>
-              <td>
-                <a href="{% url 'exams:exam_detail' exam.pk %}" class="btn btn-sm btn-outline-primary">View</a>
-                <a href="{% url 'exams:configure_exam_halls' exam.pk %}" class="btn btn-sm btn-outline-success">Assign Duties</a>
-              </td>
+              <th class="px-3 py-2">Date</th>
+              <th class="px-3 py-2">Time</th>
+              <th class="px-3 py-2">Course</th>
+              <th class="px-3 py-2">Dept</th>
+              <th class="px-3 py-2 text-right">Actions</th>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  {% else %}
-    <p class="text-muted">No upcoming exams scheduled.</p>
-  {% endif %}
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            {% for exam in upcoming_exams %}
+              <tr>
+                <td class="px-3 py-2 whitespace-nowrap text-slate-800">{{ exam.exam_date }}</td>
+                <td class="px-3 py-2 whitespace-nowrap text-slate-800">
+                  {{ exam.start_time }} – {{ exam.end_time }}
+                </td>
+                <td class="px-3 py-2">
+                  <div class="text-slate-900 text-sm font-medium">{{ exam.course_code }}</div>
+                  {% if exam.course_name != exam.course_code %}
+                    <div class="text-xs text-slate-500">{{ exam.course_name }}</div>
+                  {% endif %}
+                </td>
+                <td class="px-3 py-2 text-slate-800">{{ exam.department.code }}</td>
+                <td class="px-3 py-2">
+                  <div class="flex justify-end gap-2">
+                    <a href="{% url 'exams:exam_detail' exam.pk %}"
+                       class="inline-flex items-center rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50">
+                      View
+                    </a>
+                    <a href="{% url 'exams:configure_exam_halls' exam.pk %}"
+                       class="inline-flex items-center rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700">
+                      Assign duties
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-sm text-slate-500">No upcoming exams scheduled.</p>
+    {% endif %}
+  </section>
 </div>
 {% endblock %}

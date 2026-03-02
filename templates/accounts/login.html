@@ -3,23 +3,42 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-4">
-    <h1 class="mb-4 text-center">Platform Login</h1>
-    <form method="post" class="card card-body shadow-sm">
+<div class="flex items-center justify-center">
+  <div class="w-full max-w-md">
+    <div class="mb-6 text-center">
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Sign in to Invigilation System</h1>
+      <p class="mt-2 text-sm text-slate-600">
+        Use the username and temporary password shared by the admin.
+      </p>
+    </div>
+
+    <form method="post" class="space-y-4 rounded-xl border border-slate-200 bg-white px-6 py-6 shadow-sm">
       {% csrf_token %}
-      {{ form.non_field_errors }}
-      <div class="mb-3">
-        <label for="id_username" class="form-label">Username</label>
+      {% if form.non_field_errors %}
+        <div class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <div class="space-y-1.5">
+        <label for="id_username" class="block text-sm font-medium text-slate-700">Username</label>
         {{ form.username }}
       </div>
-      <div class="mb-3">
-        <label for="id_password" class="form-label">Password</label>
+
+      <div class="space-y-1.5">
+        <label for="id_password" class="block text-sm font-medium text-slate-700">Password</label>
         {{ form.password }}
       </div>
-      <button type="submit" class="btn btn-primary w-100">Login</button>
-      <div class="mt-3 text-center">
-        <a href="{% url 'accounts:forgot_password' %}" class="text-decoration-none">Forgot Password?</a>
+
+      <button type="submit"
+              class="mt-2 inline-flex w-full items-center justify-center rounded-md bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+        Login
+      </button>
+
+      <div class="mt-3 flex items-center justify-between text-xs sm:text-sm">
+        <a href="{% url 'accounts:forgot_password' %}" class="font-medium text-primary-700 hover:text-primary-800">
+          Forgot password?
+        </a>
       </div>
     </form>
   </div>

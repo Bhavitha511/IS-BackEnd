@@ -3,20 +3,40 @@
 {% block title %}Apply for Leave{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Apply for Leave</h1>
-<form method="post" class="card card-body shadow-sm" style="max-width: 600px;">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  {% for field in form %}
-    <div class="mb-3">
-      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-      {{ field }}
-      {% if field.errors %}
-        <div class="text-danger small">{{ field.errors|striptags }}</div>
-      {% endif %}
+<div class="max-w-xl">
+  <h1 class="mb-3 text-2xl font-semibold tracking-tight text-slate-900">Apply for leave</h1>
+  <p class="mb-5 text-sm text-slate-600">
+    Submit a leave request for upcoming dates. Approved leave is automatically considered during invigilation allocation.
+  </p>
+
+  <form method="post" class="space-y-4 rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    {% for field in form %}
+      <div class="space-y-1.5">
+        <label class="block text-sm font-medium text-slate-700" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-xs text-red-600">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="flex flex-wrap gap-2">
+      <button type="submit"
+              class="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+        Submit
+      </button>
+      <a href="{% url 'leaves:my_leaves' %}"
+         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+        Cancel
+      </a>
     </div>
-  {% endfor %}
-  <button type="submit" class="btn btn-primary">Submit</button>
-  <a href="{% url 'leaves:my_leaves' %}" class="btn btn-secondary">Cancel</a>
-</form>
+  </form>
+</div>
 {% endblock %}

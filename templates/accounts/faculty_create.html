@@ -3,19 +3,36 @@
 {% block title %}Create Faculty{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Create Faculty Profile</h1>
-<form method="post" class="card card-body shadow-sm">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  {% for field in form %}
-    <div class="mb-3">
-      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-      {{ field }}
-      {% if field.errors %}
-        <div class="text-danger small">{{ field.errors|striptags }}</div>
-      {% endif %}
+<div class="max-w-3xl">
+  <h1 class="mb-3 text-2xl font-semibold tracking-tight text-slate-900">Create faculty profile</h1>
+  <p class="mb-5 text-sm text-slate-600">
+    Create a new faculty account. Login credentials will be emailed automatically.
+  </p>
+
+  <form method="post" class="space-y-4 rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <div class="grid gap-4 md:grid-cols-2">
+      {% for field in form %}
+        <div class="space-y-1.5 md:col-span-1">
+          <label class="block text-sm font-medium text-slate-700" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="text-xs text-red-600">{{ field.errors|striptags }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
     </div>
-  {% endfor %}
-  <button type="submit" class="btn btn-primary">Create Faculty</button>
-</form>
+
+    <button type="submit"
+            class="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+      Create faculty
+    </button>
+  </form>
+</div>
 {% endblock %}

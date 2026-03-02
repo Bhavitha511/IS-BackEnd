@@ -3,40 +3,50 @@
 {% block title %}My Leaves{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">My Leaves</h1>
-<div class="mb-3">
-  <a href="{% url 'leaves:apply_leave' %}" class="btn btn-primary">Apply for Leave</a>
+<div class="flex flex-col gap-4">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">My leaves</h1>
+    <a href="{% url 'leaves:apply_leave' %}"
+       class="inline-flex items-center rounded-md bg-primary-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+      Apply for leave
+    </a>
+  </div>
+
+  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <table class="min-w-full divide-y divide-slate-200 text-sm">
+      <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <tr>
+          <th class="px-3 py-2">From</th>
+          <th class="px-3 py-2">To</th>
+          <th class="px-3 py-2">Status</th>
+          <th class="px-3 py-2">Reason</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 bg-white">
+        {% for l in leaves %}
+          <tr>
+            <td class="px-3 py-2 text-slate-800">{{ l.start_date }}</td>
+            <td class="px-3 py-2 text-slate-800">{{ l.end_date }}</td>
+            <td class="px-3 py-2">
+              <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
+                {% if l.status == 'PENDING' %}bg-amber-50 text-amber-700 ring-1 ring-amber-100
+                {% elif l.status == 'APPROVED' %}bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100
+                {% elif l.status == 'REJECTED' %}bg-red-50 text-red-700 ring-1 ring-red-100
+                {% else %}bg-slate-50 text-slate-700 ring-1 ring-slate-100{% endif %}">
+                {{ l.status|title }}
+              </span>
+            </td>
+            <td class="px-3 py-2 text-slate-800">{{ l.reason|default:'-' }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="px-3 py-6 text-center text-sm text-slate-500">
+              No leave requests yet.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>From</th>
-      <th>To</th>
-      <th>Status</th>
-      <th>Reason</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for l in leaves %}
-      <tr>
-        <td>{{ l.start_date }}</td>
-        <td>{{ l.end_date }}</td>
-        <td>
-          {% if l.status == 'PENDING' %}
-            <span class="badge bg-warning text-dark">Pending</span>
-          {% elif l.status == 'APPROVED' %}
-            <span class="badge bg-success">Approved</span>
-          {% elif l.status == 'REJECTED' %}
-            <span class="badge bg-danger">Rejected</span>
-          {% else %}
-            <span class="badge bg-light text-dark">{{ l.status }}</span>
-          {% endif %}
-        </td>
-        <td>{{ l.reason|default:'-' }}</td>
-      </tr>
-    {% empty %}
-      <tr><td colspan="4" class="text-center p-3">No leave requests yet.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
 {% endblock %}

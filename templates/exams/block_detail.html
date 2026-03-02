@@ -4,22 +4,38 @@
 {% block title %}Block {{ block_code }} Rooms{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Block {{ block_code }} - Rooms &amp; Cabins</h1>
-<a href="{% url 'exams:blocks_list' %}" class="btn btn-sm btn-outline-secondary mb-3">Back to Blocks</a>
+<div class="flex flex-col gap-4">
+  <div class="flex items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">
+        Block {{ block_code }} – rooms &amp; cabins
+      </h1>
+      <p class="mt-1 text-sm text-slate-600">
+        Overview of rooms in this block and any mapped faculty cabins.
+      </p>
+    </div>
+    <a href="{% url 'exams:blocks_list' %}"
+       class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 hover:bg-slate-50">
+      Back to blocks
+    </a>
+  </div>
 
-<div class="row g-3">
-  {% for hall in halls %}
-    {% with faculty_list=faculty_by_room|dict_get:hall.name %}
-      {% if faculty_list %}
-        {% with tooltip=faculty_list|join:', ' %}
-          {% include 'exams/partials/_room_card.html' with hall=hall tooltip=tooltip %}
-        {% endwith %}
-      {% else %}
-        {% include 'exams/partials/_room_card.html' with hall=hall tooltip='' %}
-      {% endif %}
-    {% endwith %}
-  {% empty %}
-    <p>No rooms defined for this block.</p>
-  {% endfor %}
+  <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    {% for hall in halls %}
+      {% with faculty_list=faculty_by_room|dict_get:hall.name %}
+        {% if faculty_list %}
+          {% with tooltip=faculty_list|join:', ' %}
+            {% include 'exams/partials/_room_card.html' with hall=hall tooltip=tooltip %}
+          {% endwith %}
+        {% else %}
+          {% include 'exams/partials/_room_card.html' with hall=hall tooltip='' %}
+        {% endif %}
+      {% endwith %}
+    {% empty %}
+      <p class="text-sm text-slate-500">
+        No rooms defined for this block.
+      </p>
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}

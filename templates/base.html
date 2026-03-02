@@ -1,76 +1,128 @@
 {% load static %}
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-full">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Invigilation System{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-      <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="/">invivgilation duties</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainNavbar">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            {% if user.is_authenticated %}
-              {% if user.is_staff %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'exams:admin_dashboard' %}">Admin Dashboard</a>
-                </li>
-              {% else %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'exams:faculty_dashboard' %}">Faculty Dashboard</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'timetable:faculty_timetable' %}">My Timetable</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'leaves:my_leaves' %}">My Leaves</a>
-                </li>
-              {% endif %}
-            {% endif %}
-          </ul>
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            {% if user.is_authenticated %}
-              <li class="nav-item">
-                <span class="navbar-text me-2">{{ user.get_full_name|default:user.username }}</span>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
-              </li>
-            {% else %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
-              </li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
-    </nav>
 
-    <div class="container mb-5">
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-
-      {% block content %}{% endblock %}
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Initialize Bootstrap tooltips for elements with data-bs-toggle="tooltip"
-      document.addEventListener('DOMContentLoaded', function () {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-          return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-      });
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+            },
+            colors: {
+              primary: {
+                50: "#eff6ff",
+                100: "#dbeafe",
+                600: "#2563eb",
+                700: "#1d4ed8",
+              },
+            },
+          },
+        },
+      };
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="h-full bg-slate-50 text-slate-900">
+    <div class="min-h-screen flex flex-col">
+      <!-- Top navigation -->
+      <nav class="border-b border-slate-200 bg-white/90 backdrop-blur">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="flex h-16 items-center justify-between">
+            <div class="flex items-center gap-8">
+              <a href="/" class="flex items-center gap-2">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-white text-sm font-semibold">
+                  IS
+                </span>
+                <span class="text-base sm:text-lg font-semibold tracking-tight">
+                  invigilation duties
+                </span>
+              </a>
+              {% if user.is_authenticated %}
+                <div class="hidden md:flex items-center gap-4 text-sm font-medium text-slate-700">
+                  {% if user.is_staff %}
+                    <a href="{% url 'exams:admin_dashboard' %}" class="inline-flex items-center rounded-md px-3 py-1.5 hover:text-primary-700 hover:bg-primary-50 transition">
+                      Admin Dashboard
+                    </a>
+                  {% else %}
+                    <a href="{% url 'exams:faculty_dashboard' %}" class="inline-flex items-center rounded-md px-3 py-1.5 hover:text-primary-700 hover:bg-primary-50 transition">
+                      Faculty Dashboard
+                    </a>
+                    <a href="{% url 'timetable:faculty_timetable' %}" class="inline-flex items-center rounded-md px-3 py-1.5 hover:text-primary-700 hover:bg-primary-50 transition">
+                      My Timetable
+                    </a>
+                    <a href="{% url 'leaves:my_leaves' %}" class="inline-flex items-center rounded-md px-3 py-1.5 hover:text-primary-700 hover:bg-primary-50 transition">
+                      My Leaves
+                    </a>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="flex items-center gap-3">
+              {% if user.is_authenticated %}
+                <div class="hidden sm:flex flex-col items-end">
+                  <span class="text-sm font-medium">{{ user.get_full_name|default:user.username }}</span>
+                </div>
+                <a href="{% url 'accounts:logout' %}"
+                   class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50">
+                  Logout
+                </a>
+              {% else %}
+                <a href="{% url 'accounts:login' %}"
+                   class="inline-flex items-center rounded-md bg-primary-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700">
+                  Login
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Main content -->
+      <main class="flex-1">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+          {% if messages %}
+            <div class="mb-4 space-y-2">
+              {% for message in messages %}
+                {% if message.tags == 'success' %}
+                  <div class="rounded-md bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-800">
+                    {{ message }}
+                  </div>
+                {% elif message.tags == 'error' %}
+                  <div class="rounded-md bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800">
+                    {{ message }}
+                  </div>
+                {% elif message.tags == 'warning' %}
+                  <div class="rounded-md bg-yellow-50 border border-yellow-200 px-4 py-3 text-sm text-yellow-800">
+                    {{ message }}
+                  </div>
+                {% else %}
+                  <div class="rounded-md bg-slate-50 border border-slate-200 px-4 py-3 text-sm text-slate-800">
+                    {{ message }}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% block content %}{% endblock %}
+        </div>
+      </main>
+
+      <footer class="border-t border-slate-200 bg-white">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-4 text-xs sm:text-sm text-slate-500 flex items-center justify-between">
+          <p>&copy; {{ now|date:"Y" }} Invigilation System. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
   </body>
 </html>

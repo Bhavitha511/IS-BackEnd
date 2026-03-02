@@ -3,31 +3,64 @@
 {% block title %}Exams{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Exams</h1>
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Time</th>
-      <th>Course</th>
-      <th>Department</th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for exam in exams %}
-      <tr>
-        <td>{{ exam.exam_date }}</td>
-        <td>{{ exam.start_time }} - {{ exam.end_time }}</td>
-        <td>{{ exam.course_code }} - {{ exam.course_name }}</td>
-        <td>{{ exam.department.code }}</td>
-        <td><a href="{% url 'exams:exam_detail' exam.pk %}" class="btn btn-sm btn-primary">Details</a></td>
-        <td><a href="{% url 'exams:configure_exam_halls' exam.pk %}" class="btn btn-sm btn-success">Assign Duties</a></td>
-      </tr>
-    {% empty %}
-      <tr><td colspan="5" class="text-center p-3">No exams defined.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="flex flex-col gap-4">
+  <div class="flex items-center justify-between gap-3">
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Exams</h1>
+    <a href="{% url 'exams:upload_exam_timetable' %}"
+       class="inline-flex items-center rounded-md bg-primary-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+      Upload timetable (CSV)
+    </a>
+  </div>
+
+  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <table class="min-w-full divide-y divide-slate-200 text-sm">
+      <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <tr>
+          <th class="px-3 py-2">Date</th>
+          <th class="px-3 py-2">Time</th>
+          <th class="px-3 py-2">Course</th>
+          <th class="px-3 py-2">Dept</th>
+          <th class="px-3 py-2 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 bg-white">
+        {% for exam in exams %}
+          <tr>
+            <td class="px-3 py-2 whitespace-nowrap text-slate-800">{{ exam.exam_date }}</td>
+            <td class="px-3 py-2 whitespace-nowrap text-slate-800">
+              {{ exam.start_time }} – {{ exam.end_time }}
+            </td>
+            <td class="px-3 py-2">
+              <div class="text-slate-900 text-sm font-medium">
+                {{ exam.course_code }}
+              </div>
+              <div class="text-xs text-slate-500">
+                {{ exam.course_name }}
+              </div>
+            </td>
+            <td class="px-3 py-2 text-slate-800">{{ exam.department.code }}</td>
+            <td class="px-3 py-2">
+              <div class="flex justify-end gap-2">
+                <a href="{% url 'exams:exam_detail' exam.pk %}"
+                   class="inline-flex items-center rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50">
+                  Details
+                </a>
+                <a href="{% url 'exams:configure_exam_halls' exam.pk %}"
+                   class="inline-flex items-center rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700">
+                  Assign duties
+                </a>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="px-3 py-6 text-center text-sm text-slate-500">
+              No exams defined.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}

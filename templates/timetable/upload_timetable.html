@@ -3,18 +3,47 @@
 {% block title %}Upload Timetable{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Upload Timetable (CSV)</h1>
-<p>CSV columns: <code>employee_id, day, start_time, end_time, course_code, course_name, is_lab</code></p>
-<form method="post" enctype="multipart/form-data" class="card card-body shadow-sm" style="max-width: 600px;">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  <div class="mb-3">
-    {{ form.file.label_tag }}
-    {{ form.file }}
-    {% if form.file.errors %}
-      <div class="text-danger small">{{ form.file.errors|striptags }}</div>
-    {% endif %}
+<div class="max-w-xl">
+  <h1 class="mb-3 text-2xl font-semibold tracking-tight text-slate-900">Upload timetable (CSV)</h1>
+  <p class="mb-4 text-sm text-slate-600">
+    Upload faculty teaching timetables in bulk. Each row should represent a single class slot.
+  </p>
+
+  <div class="mb-4 rounded-lg border border-slate-200 bg-white px-4 py-3 text-xs sm:text-sm text-slate-700 shadow-sm">
+    <p class="font-semibold">Expected columns</p>
+    <p class="mt-1">
+      <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">employee_id</code>,
+      <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">day</code>,
+      <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">start_time</code>,
+      <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">end_time</code>,
+      <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">course_code</code>,
+      <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">course_name</code>,
+      <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">is_lab</code>
+    </p>
   </div>
-  <button type="submit" class="btn btn-primary">Upload</button>
-</form>
+
+  <form method="post"
+        enctype="multipart/form-data"
+        class="space-y-4 rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <div class="space-y-1.5">
+      {{ form.file.label_tag }}
+      {{ form.file }}
+      {% if form.file.errors %}
+        <div class="text-xs text-red-600">{{ form.file.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <button type="submit"
+            class="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+      Upload
+    </button>
+  </form>
+</div>
 {% endblock %}

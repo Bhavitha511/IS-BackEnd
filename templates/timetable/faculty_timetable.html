@@ -4,65 +4,85 @@
 {% block title %}My Timetable{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">My Timetable</h1>
-{% if approved_leaves %}
-  <div class="alert alert-info" role="alert">
-    <strong>Approved Leave:</strong>
-    <ul class="mb-0">
-      {% for leave in approved_leaves %}
-        <li>{{ leave.start_date }} to {{ leave.end_date }}</li>
-      {% endfor %}
-    </ul>
+<div class="flex flex-col gap-4">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">My timetable</h1>
+      <p class="mt-1 text-sm text-slate-600">
+        Weekly teaching slots that are considered when allocating invigilation duties.
+      </p>
+    </div>
+    <a href="{% url 'timetable:add_slot' %}"
+       class="inline-flex items-center rounded-md bg-primary-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+      Add time slot
+    </a>
   </div>
-{% endif %}
-<div class="mb-3">
-  <a href="{% url 'timetable:add_slot' %}" class="btn btn-primary">Add Time Slot</a>
-</div>
-<table class="table table-bordered table-striped align-middle text-center">
-  <thead class="table-light">
-    <tr>
-      <th scope="col">Day</th>
-      {% for key, label in time_slots %}
-        <th scope="col">{{ label }}</th>
-      {% endfor %}
-    </tr>
-  </thead>
-  <tbody>
-    {% for day_code, day_label in days %}
-      <tr>
-        <th scope="row" class="text-start">{{ day_label }}</th>
-        {% for key, label in time_slots %}
-          {% with cell_slots=grid|dict_get:day_code|dict_get:key %}
-            <td>
-              {% if cell_slots %}
-                {% for s in cell_slots %}
-                  <div class="mb-1">
-                    <div class="fw-semibold">
-                      {{ s.course_code }} {{ s.course_name }}
-                    </div>
-                    {% if s.year %}
-                      <div class="text-muted small">Year: {{ s.year }}</div>
-                    {% endif %}
-                    {% if s.is_lab %}
-                      <span class="badge text-bg-info">Lab</span>
-                    {% endif %}
-                    <div class="mt-1">
-                      <a href="{% url 'timetable:delete_slot' s.pk %}"
-                         class="btn btn-sm btn-outline-danger"
-                         onclick="return confirm('Delete this slot?');">
-                        Delete
-                      </a>
-                    </div>
-                  </div>
-                {% endfor %}
-              {% else %}
-                <span class="text-muted">-</span>
-              {% endif %}
-            </td>
-          {% endwith %}
+
+  {% if approved_leaves %}
+    <div class="rounded-lg border border-sky-100 bg-sky-50 px-4 py-3 text-sm text-sky-900">
+      <p class="font-semibold">Approved leave</p>
+      <ul class="mt-1 list-disc pl-5">
+        {% for leave in approved_leaves %}
+          <li>{{ leave.start_date }} to {{ leave.end_date }}</li>
         {% endfor %}
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+      </ul>
+    </div>
+  {% endif %}
+
+  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+    <table class="min-w-full border-collapse text-sm">
+      <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <tr>
+          <th class="border-b border-slate-200 px-3 py-2 text-left">Day</th>
+          {% for key, label in time_slots %}
+            <th class="border-b border-slate-200 px-3 py-2 text-center">{{ label }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for day_code, day_label in days %}
+          <tr class="border-t border-slate-100">
+            <th class="whitespace-nowrap border-r border-slate-100 bg-slate-50 px-3 py-2 text-left text-sm font-medium text-slate-800">
+              {{ day_label }}
+            </th>
+            {% for key, label in time_slots %}
+              {% with cell_slots=grid|dict_get:day_code|dict_get:key %}
+                <td class="px-2 py-2 align-top text-center">
+                  {% if cell_slots %}
+                    <div class="space-y-1">
+                      {% for s in cell_slots %}
+                        <div class="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-left text-xs">
+                          <div class="font-semibold text-slate-900">
+                            {{ s.course_code }} {{ s.course_name }}
+                          </div>
+                          {% if s.year %}
+                            <div class="text-[11px] text-slate-500">Year: {{ s.year }}</div>
+                          {% endif %}
+                          {% if s.is_lab %}
+                            <span class="mt-0.5 inline-flex items-center rounded-full bg-sky-50 px-2 py-0.5 text-[10px] font-medium text-sky-700 ring-1 ring-sky-100">
+                              Lab
+                            </span>
+                          {% endif %}
+                          <div class="mt-1">
+                            <a href="{% url 'timetable:delete_slot' s.pk %}"
+                               class="inline-flex items-center rounded-md border border-red-200 bg-white px-2 py-0.5 text-[11px] font-medium text-red-700 hover:bg-red-50"
+                               onclick="return confirm('Delete this slot?');">
+                              Delete
+                            </a>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    <span class="text-xs text-slate-300">—</span>
+                  {% endif %}
+                </td>
+              {% endwith %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}

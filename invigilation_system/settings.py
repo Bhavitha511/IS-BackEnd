@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,7 +43,7 @@ INSTALLED_APPS = [
     'exams',
     'timetable',
     'leaves',
-    'logs',
+    # 'logs',
 ]
 
 MIDDLEWARE = [
@@ -130,16 +131,21 @@ LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'accounts:dashboard'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 
-# Email settings (console backend for development). Change to SMTP for real emails.
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
-EMAIL_HOST_USER = "bhavithayadalam11@gmail.com"          # <- put your Gmail address here
-EMAIL_HOST_PASSWORD = "phyuicldfrzhhdck"                 # <- paste the 16-char app password
-
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# Email settings
+#
+# Default: console backend (prints emails in the terminal) so you can test OTP flows
+# without configuring SMTP.
+#
+# To use SMTP in production/dev:
+# - Set EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+# - Set EMAIL_HOST, EMAIL_PORT, EMAIL_USE_TLS, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True").lower() in {"1", "true", "yes"}
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "no-reply@invigilation.local")
 
 
 # Default primary key field type

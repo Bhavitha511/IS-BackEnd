@@ -3,39 +3,51 @@
 {% block title %}Create Faculty Profiles (Batch Mode){% endblock %}
 
 {% block content %}
-<h1 class="mb-3">Create Faculty Profiles (Batch Mode)</h1>
-<p class="text-muted">Enter faculty details below. Use the "Add Faculty" button to append more rows. When done, click "Create Faculty Profiles" to bulk-create accounts. Usernames and passwords will be generated automatically.</p>
-
-<form id="batch-form" method="post" class="mb-4">
-  {% csrf_token %}
-  <input type="hidden" name="action" value="create">
-
-  <div class="table-responsive">
-    <table class="table table-bordered align-middle" id="faculty-table" style="table-layout: auto; min-width: 1000px;">
-      <thead class="table-light">
-        <tr>
-          <th style="width: 120px;">Employee ID</th>
-          <th style="width: 140px;">First Name</th>
-          <th style="width: 140px;">Last Name</th>
-          <th style="width: 300px;">Email</th>
-          <th style="width: 200px;">Department</th>
-          <th style="width: 100px;">Cabin Block</th>
-          <th style="width: 100px;">Cabin Room</th>
-          <th style="width: 120px;">Phone</th>
-          <th style="width: 50px;"></th>
-        </tr>
-      </thead>
-      <tbody id="faculty-tbody">
-        {% include 'accounts/partials/faculty_batch_row.html' with departments=departments row_index=0 only %}
-      </tbody>
-    </table>
+<div class="flex flex-col gap-4">
+  <div>
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Create faculty profiles (batch)</h1>
+    <p class="mt-1 text-sm text-slate-600">
+      Enter faculty details row by row. New accounts and initial passwords will be generated and emailed automatically.
+    </p>
   </div>
 
-  <div class="d-flex justify-content-between gap-2">
-    <button type="button" id="add-row-btn" class="btn btn-outline-primary">Add Faculty</button>
-    <button type="submit" class="btn btn-success">Create Faculty Profiles</button>
-  </div>
-</form>
+  <form id="batch-form" method="post" class="space-y-4">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="create">
+
+    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+      <table class="min-w-full text-xs" id="faculty-table" style="table-layout:auto; min-width: 900px;">
+        <thead class="bg-slate-50 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+          <tr>
+            <th class="px-2 py-2">Employee ID</th>
+            <th class="px-2 py-2">First name</th>
+            <th class="px-2 py-2">Last name</th>
+            <th class="px-2 py-2">Email</th>
+            <th class="px-2 py-2">Department</th>
+            <th class="px-2 py-2">Cabin block</th>
+            <th class="px-2 py-2">Cabin room</th>
+            <th class="px-2 py-2">Phone</th>
+            <th class="px-2 py-2"></th>
+          </tr>
+        </thead>
+        <tbody id="faculty-tbody" class="divide-y divide-slate-100">
+          {% include 'accounts/partials/faculty_batch_row.html' with departments=departments row_index=0 only %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <button type="button"
+              id="add-row-btn"
+              class="inline-flex items-center rounded-md border border-primary-200 bg-white px-3 py-1.5 text-xs sm:text-sm font-medium text-primary-700 hover:bg-primary-50">
+        Add faculty
+      </button>
+      <button type="submit"
+              class="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-emerald-700">
+        Create faculty profiles
+      </button>
+    </div>
+  </form>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

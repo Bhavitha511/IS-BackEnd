@@ -3,30 +3,57 @@
 {% block title %}Upload Exam Timetable{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Upload Exam Timetable (CSV)</h1>
-<p>CSV columns:</p>
-<ul>
-  <li><code>department_code</code> (e.g., CSE, CSM, ECE)</li>
-  <li><code>course_code</code></li>
-  <li><code>course_name</code></li>
-  <li><code>exam_type</code> (MID, END, TEST)</li>
-  <li><code>year</code> (1-4)</li>
-  <li><code>semester</code></li>
-  <li><code>exam_date</code> (YYYY-MM-DD)</li>
-  <li><code>start_time</code> (HH:MM)</li>
-  <li><code>end_time</code> (HH:MM)</li>
-</ul>
-<form method="post" enctype="multipart/form-data" class="card card-body shadow-sm" style="max-width: 700px;">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  <div class="mb-3">
-    {{ form.file.label_tag }}
-    {{ form.file }}
-    {% if form.file.errors %}
-      <div class="text-danger small">{{ form.file.errors|striptags }}</div>
-    {% endif %}
+<div class="flex flex-col gap-4 max-w-2xl">
+  <div>
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Upload exam timetable (CSV)</h1>
+    <p class="mt-2 text-sm text-slate-600">
+      Upload a CSV file to create multiple exams at once. Each row represents one exam slot.
+    </p>
   </div>
-  <button type="submit" class="btn btn-primary">Upload Exams</button>
-  <a href="{% url 'exams:exam_list' %}" class="btn btn-secondary">Back to Exams</a>
-</form>
+
+  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <h2 class="mb-2 text-sm font-semibold text-slate-900">Expected columns</h2>
+    <ul class="list-disc space-y-1 pl-5 text-xs sm:text-sm text-slate-700">
+      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">department_code</code> (e.g., CSE, CSM, ECE)</li>
+      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">course_code</code></li>
+      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">course_name</code></li>
+      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">exam_type</code> (MID, END, TEST)</li>
+      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">year</code> (1–4)</li>
+      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">semester</code></li>
+      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">exam_date</code> (YYYY-MM-DD)</li>
+      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">start_time</code> (HH:MM)</li>
+      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">end_time</code> (HH:MM)</li>
+    </ul>
+  </section>
+
+  <form method="post"
+        enctype="multipart/form-data"
+        class="space-y-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <div class="space-y-1.5">
+      {{ form.file.label_tag }}
+      {{ form.file }}
+      {% if form.file.errors %}
+        <div class="text-xs text-red-600">{{ form.file.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+      <button type="submit"
+              class="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+        Upload exams
+      </button>
+      <a href="{% url 'exams:exam_list' %}"
+         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+        Back to exams
+      </a>
+    </div>
+  </form>
+</div>
 {% endblock %}
