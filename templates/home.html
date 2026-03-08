@@ -1,77 +1,88 @@
 {% extends 'base.html' %}
 
 {% block title %}Invigilation Duties{% endblock %}
+{% block topbar_title %}Home{% endblock %}
 
 {% block content %}
-<section class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 via-primary-700 to-slate-900 px-6 py-12 sm:px-10 sm:py-16 lg:px-16">
-  <div class="relative z-10 max-w-3xl text-left text-white">
-    <p class="text-sm font-medium uppercase tracking-[0.2em] text-primary-100 mb-3">
-      Faculty Invigilation Management
-    </p>
-    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight mb-4">
-      Streamline exam invigilation duties for your campus.
-    </h1>
-    <p class="text-sm sm:text-base lg:text-lg text-primary-100/90 leading-relaxed mb-8 max-w-2xl">
+<div style="max-width: 900px;">
+  <section class="hero">
+    <p class="hero-eyebrow">Faculty invigilation management</p>
+    <h1 class="hero-title">Streamline exam invigilation duties for your campus.</h1>
+    <p class="hero-text">
       Plan exams, allocate fair invigilation duties, and keep faculty informed about
-      their schedules, availability, and approved leaves — all in one simple,
-      secure portal.
+      their schedules, availability, and approved leaves — all in one simple, secure portal.
     </p>
-
-    <div class="flex flex-wrap items-center gap-3">
-      {% if user.is_authenticated %}
-        {% if user.is_staff %}
-          <a href="{% url 'exams:admin_dashboard' %}"
-             class="inline-flex items-center justify-center rounded-md bg-white px-4 py-2.5 text-sm font-semibold text-primary-700 shadow-sm hover:bg-primary-50">
-            Go to Admin Dashboard
-          </a>
-        {% else %}
-          <a href="{% url 'exams:faculty_dashboard' %}"
-             class="inline-flex items-center justify-center rounded-md bg-white px-4 py-2.5 text-sm font-semibold text-primary-700 shadow-sm hover:bg-primary-50">
-            Go to Faculty Dashboard
-          </a>
-        {% endif %}
-        <a href="{% url 'accounts:logout' %}"
-           class="inline-flex items-center justify-center rounded-md border border-white/60 bg-transparent px-4 py-2.5 text-sm font-medium text-white hover:bg-white/10">
-          Logout
-        </a>
+    <div class="hero-actions">
+      {% if user.is_staff %}
+        <a href="{% url 'exams:admin_dashboard' %}" class="btn btn-primary">Go to admin dashboard</a>
       {% else %}
-        <a href="{% url 'accounts:login' %}"
-           class="inline-flex items-center justify-center rounded-md bg-white px-4 py-2.5 text-sm font-semibold text-primary-700 shadow-sm hover:bg-primary-50">
-          Login to Continue
-        </a>
-        <p class="text-xs sm:text-sm text-primary-100/90">
-          Use the credentials shared by the admin to access your dashboard.
-        </p>
+        <a href="{% url 'exams:faculty_dashboard' %}" class="btn btn-primary">Go to faculty dashboard</a>
       {% endif %}
     </div>
-  </div>
+  </section>
 
-  <div class="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 items-center justify-center md:flex">
-    <div class="h-48 w-48 rounded-full bg-white/10 blur-2xl"></div>
+  <div class="card-grid" style="margin-top: 1.75rem;">
+    <article class="card">
+      <h2 class="card-title">For Admins</h2>
+      <p class="card-body">
+        Upload exam timetables, manage departments and halls, and auto-allocate
+        invigilation duties with visibility into pending confirmations.
+      </p>
+    </article>
+    <article class="card">
+      <h2 class="card-title">For Faculty</h2>
+      <p class="card-body">
+        View upcoming duties, confirm or decline assignments, maintain your weekly
+        timetable, and manage leave requests tied to exam schedules.
+      </p>
+    </article>
+    <article class="card">
+      <h2 class="card-title">Fair &amp; Transparent</h2>
+      <p class="card-body">
+        The platform considers department, existing classes, and approved leave
+        while distributing duties, making invigilation fair and traceable.
+      </p>
+    </article>
   </div>
-</section>
+</div>
+{% endblock %}
 
-<section class="mt-8 grid gap-6 md:grid-cols-3">
-  <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-    <h2 class="text-sm font-semibold text-slate-900 mb-1">For Admins</h2>
-    <p class="text-xs sm:text-sm text-slate-600">
-      Upload exam timetables, manage departments and halls, and auto-allocate
-      invigilation duties with visibility into pending confirmations.
+{% block public_content %}
+<div class="container" style="max-width: 900px; margin: 0 auto;">
+  <section class="hero" style="margin-top: 1rem;">
+    <p class="hero-eyebrow">Faculty invigilation management</p>
+    <h1 class="hero-title">Streamline exam invigilation duties for your campus.</h1>
+    <p class="hero-text">
+      Plan exams, allocate fair invigilation duties, and keep faculty informed about
+      their schedules, availability, and approved leaves — all in one simple, secure portal.
     </p>
+    <div class="hero-actions">
+      <a href="{% url 'accounts:login' %}" class="btn btn-primary">Login to continue</a>
+    </div>
+  </section>
+
+  <div class="card-grid" style="margin-top: 1.75rem;">
+    <article class="card">
+      <h2 class="card-title">For Admins</h2>
+      <p class="card-body">
+        Upload exam timetables, manage departments and halls, and auto-allocate
+        invigilation duties with visibility into pending confirmations.
+      </p>
+    </article>
+    <article class="card">
+      <h2 class="card-title">For Faculty</h2>
+      <p class="card-body">
+        View upcoming duties, confirm or decline assignments, maintain your weekly
+        timetable, and manage leave requests tied to exam schedules.
+      </p>
+    </article>
+    <article class="card">
+      <h2 class="card-title">Fair &amp; Transparent</h2>
+      <p class="card-body">
+        The platform considers department, existing classes, and approved leave
+        while distributing duties, making invigilation fair and traceable.
+      </p>
+    </article>
   </div>
-  <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-    <h2 class="text-sm font-semibold text-slate-900 mb-1">For Faculty</h2>
-    <p class="text-xs sm:text-sm text-slate-600">
-      View upcoming duties, confirm or decline assignments, maintain your weekly
-      timetable, and manage leave requests tied to exam schedules.
-    </p>
-  </div>
-  <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-    <h2 class="text-sm font-semibold text-slate-900 mb-1">Fair & Transparent</h2>
-    <p class="text-xs sm:text-sm text-slate-600">
-      The platform considers department, existing classes, and approved leave
-      while distributing duties, making invigilation fair and traceable.
-    </p>
-  </div>
-</section>
+</div>
 {% endblock %}

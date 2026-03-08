@@ -1,52 +1,48 @@
 {% extends 'base.html' %}
 
 {% block title %}Exams{% endblock %}
+{% block topbar_title %}All Exams{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-4">
-  <div class="flex items-center justify-between gap-3">
-    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Exams</h1>
-    <a href="{% url 'exams:upload_exam_timetable' %}"
-       class="inline-flex items-center rounded-md bg-primary-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+<div class="page-stack">
+  <div class="page-header">
+    <h1 class="page-title">Exams</h1>
+    <a href="{% url 'exams:upload_exam_timetable' %}" class="btn btn-primary btn-sm">
       Upload timetable (CSV)
     </a>
   </div>
 
-  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
         <tr>
-          <th class="px-3 py-2">Date</th>
-          <th class="px-3 py-2">Time</th>
-          <th class="px-3 py-2">Course</th>
-          <th class="px-3 py-2">Dept</th>
-          <th class="px-3 py-2 text-right">Actions</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Course</th>
+          <th>Dept</th>
+          <th class="text-right">Actions</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-100 bg-white">
+      <tbody>
         {% for exam in exams %}
           <tr>
-            <td class="px-3 py-2 whitespace-nowrap text-slate-800">{{ exam.exam_date }}</td>
-            <td class="px-3 py-2 whitespace-nowrap text-slate-800">
+            <td>{{ exam.exam_date }}</td>
+            <td>
               {{ exam.start_time }} – {{ exam.end_time }}
             </td>
-            <td class="px-3 py-2">
-              <div class="text-slate-900 text-sm font-medium">
-                {{ exam.course_code }}
-              </div>
-              <div class="text-xs text-slate-500">
+            <td>
+              <div>{{ exam.course_code }}</div>
+              <div class="table-cell-muted">
                 {{ exam.course_name }}
               </div>
             </td>
-            <td class="px-3 py-2 text-slate-800">{{ exam.department.code }}</td>
-            <td class="px-3 py-2">
-              <div class="flex justify-end gap-2">
-                <a href="{% url 'exams:exam_detail' exam.pk %}"
-                   class="inline-flex items-center rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50">
+            <td>{{ exam.department.code }}</td>
+            <td>
+              <div class="table-actions">
+                <a href="{% url 'exams:exam_detail' exam.pk %}" class="btn btn-outline btn-sm">
                   Details
                 </a>
-                <a href="{% url 'exams:configure_exam_halls' exam.pk %}"
-                   class="inline-flex items-center rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700">
+                <a href="{% url 'exams:configure_exam_halls' exam.pk %}" class="btn btn-primary btn-sm">
                   Assign duties
                 </a>
               </div>
@@ -54,7 +50,7 @@
           </tr>
         {% empty %}
           <tr>
-            <td colspan="5" class="px-3 py-6 text-center text-sm text-slate-500">
+            <td colspan="5" class="table-empty">
               No exams defined.
             </td>
           </tr>

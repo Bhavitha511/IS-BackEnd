@@ -1,59 +1,60 @@
 {% extends 'base.html' %}
 
 {% block title %}Upload Exam Timetable{% endblock %}
+{% block topbar_title %}Upload Exam Timetable{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-4 max-w-2xl">
-  <div>
-    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Upload exam timetable (CSV)</h1>
-    <p class="mt-2 text-sm text-slate-600">
-      Upload a CSV file to create multiple exams at once. Each row represents one exam slot.
-    </p>
+<div class="page-stack" style="max-width: 640px;">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Upload exam timetable (CSV)</h1>
+      <p class="page-subtitle">
+        Upload a CSV file to create multiple exams at once. Each row represents one exam slot.
+      </p>
+    </div>
   </div>
 
-  <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-    <h2 class="mb-2 text-sm font-semibold text-slate-900">Expected columns</h2>
-    <ul class="list-disc space-y-1 pl-5 text-xs sm:text-sm text-slate-700">
-      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">department_code</code> (e.g., CSE, CSM, ECE)</li>
-      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">course_code</code></li>
-      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">course_name</code></li>
-      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">exam_type</code> (MID, END, TEST)</li>
-      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">year</code> (1–4)</li>
-      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">semester</code></li>
-      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">exam_date</code> (YYYY-MM-DD)</li>
-      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">start_time</code> (HH:MM)</li>
-      <li><code class="rounded bg-slate-100 px-1 py-0.5 text-xs">end_time</code> (HH:MM)</li>
+  <section class="card">
+    <h2 class="card-title">Expected columns</h2>
+    <ul class="stack-sm" style="margin-top: 0.5rem; font-size: 0.85rem;">
+      <li><code>department_code</code> (e.g., CSE, CSM, ECE)</li>
+      <li><code>course_code</code></li>
+      <li><code>course_name</code></li>
+      <li><code>exam_type</code> (MID, END, TEST)</li>
+      <li><code>year</code> (1–4)</li>
+      <li><code>semester</code></li>
+      <li><code>exam_date</code> (YYYY-MM-DD)</li>
+      <li><code>start_time</code> (HH:MM)</li>
+      <li><code>end_time</code> (HH:MM)</li>
     </ul>
   </section>
 
-  <form method="post"
-        enctype="multipart/form-data"
-        class="space-y-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-    {% csrf_token %}
-    {% if form.non_field_errors %}
-      <div class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
-        {{ form.non_field_errors }}
-      </div>
-    {% endif %}
-
-    <div class="space-y-1.5">
-      {{ form.file.label_tag }}
-      {{ form.file }}
-      {% if form.file.errors %}
-        <div class="text-xs text-red-600">{{ form.file.errors|striptags }}</div>
+  <div class="form-card form-card-wide">
+    <form method="post" enctype="multipart/form-data" class="form">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-alert form-alert-error">
+          {{ form.non_field_errors }}
+        </div>
       {% endif %}
-    </div>
 
-    <div class="flex flex-wrap gap-2">
-      <button type="submit"
-              class="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
-        Upload exams
-      </button>
-      <a href="{% url 'exams:exam_list' %}"
-         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
-        Back to exams
-      </a>
-    </div>
-  </form>
+      <div class="form-field">
+        {{ form.file.label_tag }}
+        {{ form.file }}
+        {% if form.file.errors %}
+          <div class="form-error">{{ form.file.errors|striptags }}</div>
+        {% endif %}
+      </div>
+
+      <div class="justify-between">
+        <button type="submit" class="btn btn-primary">
+          Upload exams
+        </button>
+        <a href="{% url 'exams:exam_list' %}" class="btn btn-outline">
+          Back to exams
+        </a>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

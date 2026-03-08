@@ -1,60 +1,64 @@
 {% extends 'base.html' %}
 
 {% block title %}Manage Subjects / Courses{% endblock %}
+{% block topbar_title %}Courses{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-6 max-w-2xl">
-  <div>
-    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Manage subjects / courses</h1>
-    <p class="mt-1 text-sm text-slate-600">
-      Define courses by year so that faculty can quickly pick them when configuring timetables.
-    </p>
+<div class="page-stack" style="max-width: 640px;">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Manage subjects / courses</h1>
+      <p class="page-subtitle">
+        Define courses by year so that faculty can quickly pick them when configuring timetables.
+      </p>
+    </div>
   </div>
 
-  <form method="post" class="space-y-4 rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
-    {% csrf_token %}
-    {% if form.non_field_errors %}
-      <div class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
-        {{ form.non_field_errors }}
+  <div class="form-card form-card-wide">
+    <form method="post" class="form">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-alert form-alert-error">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+      <div class="form-field">
+        {{ form.year.label_tag }}
+        {{ form.year }}
       </div>
-    {% endif %}
-    <div class="space-y-1.5">
-      {{ form.year.label_tag }}
-      {{ form.year }}
-    </div>
-    <div class="space-y-1.5">
-      {{ form.code.label_tag }}
-      {{ form.code }}
-    </div>
-    <div class="space-y-1.5">
-      {{ form.name.label_tag }}
-      {{ form.name }}
-    </div>
-    <button type="submit"
-            class="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
-      Add course
-    </button>
-  </form>
+      <div class="form-field">
+        {{ form.code.label_tag }}
+        {{ form.code }}
+      </div>
+      <div class="form-field">
+        {{ form.name.label_tag }}
+        {{ form.name }}
+      </div>
+      <button type="submit" class="btn btn-primary">
+        Add course
+      </button>
+    </form>
+  </div>
 
-  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
         <tr>
-          <th class="px-3 py-2">Year</th>
-          <th class="px-3 py-2">Code</th>
-          <th class="px-3 py-2">Name</th>
+          <th>Year</th>
+          <th>Code</th>
+          <th>Name</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-100 bg-white">
+      <tbody>
         {% for course in courses %}
           <tr>
-            <td class="px-3 py-2 text-slate-800">{{ course.year }}</td>
-            <td class="px-3 py-2 text-slate-800">{{ course.code }}</td>
-            <td class="px-3 py-2 text-slate-800">{{ course.name }}</td>
+            <td>{{ course.year }}</td>
+            <td>{{ course.code }}</td>
+            <td>{{ course.name }}</td>
           </tr>
         {% empty %}
           <tr>
-            <td colspan="3" class="px-3 py-6 text-center text-sm text-slate-500">
+            <td colspan="3" class="table-empty">
               No courses defined yet.
             </td>
           </tr>

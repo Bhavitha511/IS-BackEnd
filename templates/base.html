@@ -1,114 +1,134 @@
 {% load static %}
 <!doctype html>
-<html lang="en" class="h-full">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Invigilation System{% endblock %}</title>
-
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Inter", "system-ui", "sans-serif"],
-            },
-            colors: {
-              primary: {
-                50: "#eff6ff",
-                100: "#dbeafe",
-                600: "#2563eb",
-                700: "#1d4ed8",
-              },
-            },
-          },
-        },
-      };
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
   </head>
-  <body class="h-full bg-slate-50 text-slate-900">
-    <div class="min-h-screen flex flex-col">
-      <!-- Top navigation -->
-      <nav class="border-b border-slate-200 bg-white/90 backdrop-blur">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div class="flex h-16 items-center justify-between">
-            <div class="flex items-center gap-8">
-              <a href="/" class="flex items-center gap-2">
-                <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-white text-sm font-semibold">
-                  IS
-                </span>
-                <span class="text-base sm:text-lg font-semibold tracking-tight">
-                  invigilation duties
-                </span>
-              </a>
-              {% if user.is_authenticated %}
-                <div class="hidden md:flex items-center gap-4 text-sm font-medium text-slate-700">
-                  {% if user.is_staff %}
-                    <a href="{% url 'exams:admin_dashboard' %}" class="inline-flex items-center rounded-md px-3 py-1.5 hover:text-primary-700 hover:bg-primary-50 transition">
-                      Admin Dashboard
-                    </a>
-                  {% else %}
-                    <a href="{% url 'exams:faculty_dashboard' %}" class="inline-flex items-center rounded-md px-3 py-1.5 hover:text-primary-700 hover:bg-primary-50 transition">
-                      Faculty Dashboard
-                    </a>
-                    <a href="{% url 'timetable:faculty_timetable' %}" class="inline-flex items-center rounded-md px-3 py-1.5 hover:text-primary-700 hover:bg-primary-50 transition">
-                      My Timetable
-                    </a>
-                    <a href="{% url 'leaves:my_leaves' %}" class="inline-flex items-center rounded-md px-3 py-1.5 hover:text-primary-700 hover:bg-primary-50 transition">
-                      My Leaves
-                    </a>
-                  {% endif %}
-                </div>
-              {% endif %}
-            </div>
+  <body>
 
-            <div class="flex items-center gap-3">
-              {% if user.is_authenticated %}
-                <div class="hidden sm:flex flex-col items-end">
-                  <span class="text-sm font-medium">{{ user.get_full_name|default:user.username }}</span>
-                </div>
-                <a href="{% url 'accounts:logout' %}"
-                   class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50">
-                  Logout
-                </a>
-              {% else %}
-                <a href="{% url 'accounts:login' %}"
-                   class="inline-flex items-center rounded-md bg-primary-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700">
-                  Login
-                </a>
-              {% endif %}
+    {% if user.is_authenticated %}
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <div class="sidebar-brand-icon">IS</div>
+          <div class="sidebar-brand-text">Invigilation</div>
+        </div>
+
+        {% if user.is_staff %}
+          <nav class="sidebar-section">
+            <div class="sidebar-section-title">Overview</div>
+            <a href="{% url 'exams:admin_dashboard' %}" class="sidebar-link active">
+              <span class="sidebar-link-icon">&#9673;</span> Dashboard
+            </a>
+          </nav>
+          <nav class="sidebar-section">
+            <div class="sidebar-section-title">Exam Management</div>
+            <a href="{% url 'exams:exam_list' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#9783;</span> All Exams
+            </a>
+            <a href="{% url 'exams:upload_exam_timetable' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#8679;</span> Upload Timetable
+            </a>
+            <a href="{% url 'exams:pending_assignments' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#9888;</span> Pending Duties
+            </a>
+          </nav>
+          <nav class="sidebar-section">
+            <div class="sidebar-section-title">Configuration</div>
+            <a href="{% url 'exams:manage_departments' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#9632;</span> Departments
+            </a>
+            <a href="{% url 'exams:manage_halls' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#9635;</span> Blocks &amp; Rooms
+            </a>
+            <a href="{% url 'timetable:manage_courses' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#9734;</span> Courses
+            </a>
+          </nav>
+          <nav class="sidebar-section">
+            <div class="sidebar-section-title">People</div>
+            <a href="{% url 'accounts:faculty_list' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#9823;</span> Faculty List
+            </a>
+            <a href="{% url 'accounts:create_faculty' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#43;</span> Create Faculty
+            </a>
+            <a href="{% url 'accounts:create_faculty_batch' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#8862;</span> Batch Create
+            </a>
+            <a href="{% url 'leaves:leave_requests_admin' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#9993;</span> Leave Requests
+            </a>
+          </nav>
+        {% else %}
+          <nav class="sidebar-section">
+            <div class="sidebar-section-title">Overview</div>
+            <a href="{% url 'exams:faculty_dashboard' %}" class="sidebar-link active">
+              <span class="sidebar-link-icon">&#9673;</span> My Duties
+            </a>
+          </nav>
+          <nav class="sidebar-section">
+            <div class="sidebar-section-title">Schedule</div>
+            <a href="{% url 'timetable:faculty_timetable' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#9783;</span> My Timetable
+            </a>
+            <a href="{% url 'timetable:add_slot' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#43;</span> Add Slot
+            </a>
+          </nav>
+          <nav class="sidebar-section">
+            <div class="sidebar-section-title">Leave</div>
+            <a href="{% url 'leaves:my_leaves' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#9993;</span> My Leaves
+            </a>
+            <a href="{% url 'leaves:apply_leave' %}" class="sidebar-link">
+              <span class="sidebar-link-icon">&#43;</span> Apply Leave
+            </a>
+          </nav>
+        {% endif %}
+
+        <div class="sidebar-footer">
+          <div class="sidebar-user">
+            <div class="sidebar-avatar">
+              {{ user.first_name|first|default:"U" }}{{ user.last_name|first|default:"" }}
+            </div>
+            <div class="sidebar-user-info">
+              <div class="sidebar-user-name">{{ user.get_full_name|default:user.username }}</div>
+              <div class="sidebar-user-role">{% if user.is_staff %}Admin{% else %}Faculty{% endif %}</div>
             </div>
           </div>
         </div>
-      </nav>
+      </aside>
 
-      <!-- Main content -->
-      <main class="flex-1">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+      <div class="main-area">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Menu">&#9776;</button>
+            <span class="topbar-title">{% block topbar_title %}Dashboard{% endblock %}</span>
+          </div>
+          <div class="topbar-right">
+            <form method="post" action="{% url 'accounts:logout' %}" style="margin:0;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-ghost btn-sm">Logout</button>
+            </form>
+          </div>
+        </header>
+
+        <div class="content">
           {% if messages %}
-            <div class="mb-4 space-y-2">
+            <div class="messages">
               {% for message in messages %}
                 {% if message.tags == 'success' %}
-                  <div class="rounded-md bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-800">
-                    {{ message }}
-                  </div>
+                  <div class="alert alert-success">{{ message }}</div>
                 {% elif message.tags == 'error' %}
-                  <div class="rounded-md bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800">
-                    {{ message }}
-                  </div>
+                  <div class="alert alert-error">{{ message }}</div>
                 {% elif message.tags == 'warning' %}
-                  <div class="rounded-md bg-yellow-50 border border-yellow-200 px-4 py-3 text-sm text-yellow-800">
-                    {{ message }}
-                  </div>
+                  <div class="alert alert-warning">{{ message }}</div>
                 {% else %}
-                  <div class="rounded-md bg-slate-50 border border-slate-200 px-4 py-3 text-sm text-slate-800">
-                    {{ message }}
-                  </div>
+                  <div class="alert alert-info">{{ message }}</div>
                 {% endif %}
               {% endfor %}
             </div>
@@ -116,13 +136,52 @@
 
           {% block content %}{% endblock %}
         </div>
+
+        <footer class="app-footer">
+          <p>&copy; 2026 Invigilation System. All rights reserved.</p>
+        </footer>
+      </div>
+    </div>
+
+    {% else %}
+
+    <div class="public-layout">
+      <nav class="public-nav">
+        <a href="/" class="public-nav-brand">
+          <div class="public-nav-brand-icon">IS</div>
+          <div class="public-nav-brand-text">Invigilation System</div>
+        </a>
+        <a href="{% url 'accounts:login' %}" class="btn btn-primary btn-sm">Login</a>
+      </nav>
+
+      <main class="public-main">
+        {% if messages %}
+          <div class="container">
+            <div class="messages">
+              {% for message in messages %}
+                {% if message.tags == 'success' %}
+                  <div class="alert alert-success">{{ message }}</div>
+                {% elif message.tags == 'error' %}
+                  <div class="alert alert-error">{{ message }}</div>
+                {% elif message.tags == 'warning' %}
+                  <div class="alert alert-warning">{{ message }}</div>
+                {% else %}
+                  <div class="alert alert-info">{{ message }}</div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% block public_content %}{% endblock %}
       </main>
 
-      <footer class="border-t border-slate-200 bg-white">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-4 text-xs sm:text-sm text-slate-500 flex items-center justify-between">
-          <p>&copy; {{ now|date:"Y" }} Invigilation System. All rights reserved.</p>
-        </div>
+      <footer class="public-footer">
+        <p>&copy; 2026 Invigilation System. All rights reserved.</p>
       </footer>
     </div>
+
+    {% endif %}
+
   </body>
 </html>

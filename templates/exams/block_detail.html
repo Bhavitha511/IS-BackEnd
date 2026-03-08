@@ -2,25 +2,25 @@
 {% load timetable_extras %}
 
 {% block title %}Block {{ block_code }} Rooms{% endblock %}
+{% block topbar_title %}Block {{ block_code }}{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-4">
-  <div class="flex items-center justify-between gap-3">
+<div class="page-stack">
+  <div class="page-header">
     <div>
-      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">
+      <h1 class="page-title">
         Block {{ block_code }} – rooms &amp; cabins
       </h1>
-      <p class="mt-1 text-sm text-slate-600">
+      <p class="page-subtitle">
         Overview of rooms in this block and any mapped faculty cabins.
       </p>
     </div>
-    <a href="{% url 'exams:blocks_list' %}"
-       class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 hover:bg-slate-50">
+    <a href="{% url 'exams:blocks_list' %}" class="btn btn-outline btn-sm">
       Back to blocks
     </a>
   </div>
 
-  <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+  <div class="card-grid">
     {% for hall in halls %}
       {% with faculty_list=faculty_by_room|dict_get:hall.name %}
         {% if faculty_list %}
@@ -32,7 +32,7 @@
         {% endif %}
       {% endwith %}
     {% empty %}
-      <p class="text-sm text-slate-500">
+      <p class="muted">
         No rooms defined for this block.
       </p>
     {% endfor %}

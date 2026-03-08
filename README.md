@@ -374,3 +374,67 @@ All templates extend `templates/base.html`, which:
 
 This README should give you a complete, end‑to‑end understanding of how the project is structured, how the algorithms work, and how to run and use the system as both admin and faculty.
 
+---
+
+### 9. Email setup (OTP & faculty credentials)
+
+Email is used to send:
+
+- **New faculty credentials** (username + temporary password).
+- **First‑login OTP codes**.
+- **Forgot‑password OTP codes**.
+
+By default, the project is configured to **print emails to the terminal only** so you can test flows without any SMTP account.
+
+```python
+# invigilation_system/settings.py
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True").lower() in {"1", "true", "yes"}
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "no-reply@invigilation.local")
+```
+
+- With this default, any email sent by the app will appear in the **Django runserver console**, not in a real inbox.
+
+#### 9.1 Use real SMTP (recommended for actual usage)
+
+To deliver emails to real faculty mailboxes, switch to an SMTP backend via **environment variables** before running the server.
+
+Example for **Gmail with an app password** (PowerShell on Windows, from the `IS-BackEnd` folder):
+
+```powershell
+# 1) Activate virtualenv (if not already)
+cd "C:\Users\abhin\OneDrive\Desktop\Project"
+.\.venv\Scripts\Activate.ps1
+cd IS-BackEnd
+
+# 2) Configure email environment variables
+$env:EMAIL_BACKEND       = "django.core.mail.backends.smtp.EmailBackend"
+$env:EMAIL_HOST          = "smtp.gmail.com"
+$env:EMAIL_PORT          = "587"
+$env:EMAIL_USE_TLS       = "True"
+$env:EMAIL_HOST_USER     = "your_gmail_address@gmail.com"
+$env:EMAIL_HOST_PASSWORD = "your_app_password"   # NOT your normal password
+$env:DEFAULT_FROM_EMAIL  = $env:EMAIL_HOST_USER
+
+# 3) Start Django in the same PowerShell session
+python manage.py runserver
+```
+
+Notes:
+
+- Use a **Gmail app password**, not your main Google password (Google Account → Security → App passwords).
+- Keep these values secret; do **not** commit them to git.
+- For a different provider (college SMTP, Outlook, etc.) change `EMAIL_HOST`, `EMAIL_PORT`, and `EMAIL_USE_TLS` to match their documentation.
+
+Once configured, flows like:
+
+- Creating faculty (`/accounts/faculty/create/`, `/accounts/faculty/create-batch/`).
+- First login (OTP).
+- Forgot password.
+
+will send emails to the addresses configured for each faculty user.
+

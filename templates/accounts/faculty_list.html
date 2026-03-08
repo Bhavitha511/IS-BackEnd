@@ -1,70 +1,69 @@
 {% extends 'base.html' %}
 
 {% block title %}Faculty List{% endblock %}
+{% block topbar_title %}Faculty List{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-4">
-  <div class="flex flex-wrap items-center justify-between gap-3">
-    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Faculty list</h1>
-    <a href="{% url 'accounts:create_faculty_batch' %}"
-       class="inline-flex items-center rounded-md bg-primary-600 px-3 py-1.5 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+<div class="page-stack">
+  <div class="page-header">
+    <h1 class="page-title">Faculty list</h1>
+    <a href="{% url 'accounts:create_faculty_batch' %}" class="btn btn-primary btn-sm">
       Create faculty (batch)
     </a>
   </div>
 
-  <form method="get" class="max-w-xl">
-    <div class="flex flex-wrap items-center gap-2">
-      <div class="flex-1 min-w-[220px]">
-        <input type="text"
-               name="q"
-               value="{{ q }}"
-               placeholder="Search by name, email, or employee ID"
-               class="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm placeholder-slate-400 focus:border-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-600">
-      </div>
-      <button type="submit"
-              class="inline-flex items-center rounded-md bg-primary-600 px-3 py-1.5 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
-        Search
-      </button>
+  <form method="get" class="form-card form-card-wide">
+    <div class="form-field">
+      <label for="id_query" class="form-label">Search</label>
+      <input
+        type="text"
+        id="id_query"
+        name="q"
+        value="{{ q }}"
+        placeholder="Search by name, email, or employee ID"
+        class="input"
+      >
     </div>
+    <button type="submit" class="btn btn-primary">
+      Search
+    </button>
   </form>
 
-  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
         <tr>
-          <th class="px-3 py-2">Employee ID</th>
-          <th class="px-3 py-2">Name</th>
-          <th class="px-3 py-2">Email</th>
-          <th class="px-3 py-2">Department</th>
-          <th class="px-3 py-2">Cabin</th>
-          <th class="px-3 py-2">Phone</th>
-          <th class="px-3 py-2">Status</th>
+          <th>Employee ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Department</th>
+          <th>Cabin</th>
+          <th>Phone</th>
+          <th>Status</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-100 bg-white">
+      <tbody>
         {% for f in faculty %}
           <tr>
-            <td class="px-3 py-2 text-slate-800">{{ f.employee_id }}</td>
-            <td class="px-3 py-2 text-slate-800">{{ f.user.get_full_name|default:f.user.username }}</td>
-            <td class="px-3 py-2 text-slate-800">{{ f.user.email }}</td>
-            <td class="px-3 py-2 text-slate-800">{{ f.department.code }}</td>
-            <td class="px-3 py-2 text-slate-800">
+            <td>{{ f.employee_id }}</td>
+            <td>{{ f.user.get_full_name|default:f.user.username }}</td>
+            <td>{{ f.user.email }}</td>
+            <td>{{ f.department.code }}</td>
+            <td>
               {% if f.cabin_block %}
                 {{ f.cabin_block }} {{ f.cabin_room }}
               {% else %}
                 —
               {% endif %}
             </td>
-            <td class="px-3 py-2 text-slate-800">{{ f.phone_number|default:"—" }}</td>
-            <td class="px-3 py-2">
-              <div class="flex flex-wrap items-center gap-1">
-                <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
-                  {% if f.is_active %}bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100
-                  {% else %}bg-slate-100 text-slate-700 ring-1 ring-slate-200{% endif %}">
+            <td>{{ f.phone_number|default:"—" }}</td>
+            <td>
+              <div class="stack-sm">
+                <span class="badge {% if f.is_active %}badge-soft-emerald{% else %}badge-soft-slate{% endif %}">
                   {% if f.is_active %}Active{% else %}Inactive{% endif %}
                 </span>
                 {% if f.must_change_password %}
-                  <span class="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-amber-100">
+                  <span class="badge badge-soft-amber">
                     First login
                   </span>
                 {% endif %}
@@ -73,7 +72,7 @@
           </tr>
         {% empty %}
           <tr>
-            <td colspan="7" class="px-3 py-6 text-center text-sm text-slate-500">
+            <td colspan="7" class="table-empty">
               No faculty found.
             </td>
           </tr>

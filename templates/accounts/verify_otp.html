@@ -1,34 +1,26 @@
-{% extends 'base.html' %}
+{% extends 'base_auth.html' %}
 
 {% block title %}Verify OTP{% endblock %}
 
-{% block content %}
-<div class="max-w-md">
-  <h1 class="mb-3 text-2xl font-semibold tracking-tight text-slate-900">Verify one-time password</h1>
-  <p class="mb-6 text-sm text-slate-600">
-    We’ve sent a 6-digit OTP to your registered email address. Enter it below to continue
-    and set your new password.
-  </p>
+{% block auth_content %}
+<h2 class="auth-heading">Verify OTP</h2>
+<p class="auth-subheading">We sent a 6-digit code to your email. Enter it below to continue.</p>
 
-  <form method="post" class="space-y-4 rounded-xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
-    {% csrf_token %}
-    <div class="space-y-1.5">
-      <label for="id_code" class="block text-sm font-medium text-slate-700">OTP code</label>
-      <input type="text"
-             name="code"
-             id="id_code"
-             maxlength="6"
-             required
-             class="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm placeholder-slate-400 focus:border-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-600">
-      <p class="text-xs text-slate-500 mt-1">
-        The code is valid for 10 minutes.
-      </p>
-    </div>
+<form method="post" class="auth-form">
+  {% csrf_token %}
 
-    <button type="submit"
-            class="inline-flex w-full items-center justify-center rounded-md bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
-      Verify OTP
-    </button>
-  </form>
-</div>
+  <div class="form-field">
+    <label for="id_code" class="form-label">OTP code</label>
+    <input type="text" name="code" id="id_code" maxlength="6" required>
+    <p class="form-help">The code is valid for 10 minutes.</p>
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-full btn-lg">
+    Verify OTP
+  </button>
+
+  <div class="auth-footer">
+    <a href="{% url 'accounts:login' %}">Back to login</a>
+  </div>
+</form>
 {% endblock %}

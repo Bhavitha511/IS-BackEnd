@@ -1,87 +1,97 @@
 {% extends 'base.html' %}
 
 {% block title %}Manage Blocks / Rooms{% endblock %}
+{% block topbar_title %}Blocks & Rooms{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-6">
-  <div>
-    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Manage blocks / rooms</h1>
-    <p class="mt-2 text-sm text-slate-600">
-      Define exam halls by block, room, floor, and capacity for use in invigilation allocations.
-    </p>
+<div class="page-stack">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Manage blocks / rooms</h1>
+      <p class="page-subtitle">
+        Define exam halls by block, room, floor, and capacity for use in invigilation allocations.
+      </p>
+    </div>
   </div>
 
-  <form method="post"
-        class="max-w-3xl rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-    {% csrf_token %}
-    <div class="grid gap-3 sm:grid-cols-4">
-      <div class="space-y-1.5 sm:col-span-1">
-        <label class="block text-sm font-medium text-slate-700">Block</label>
-        <input type="text"
-               name="block"
-               placeholder="A, B, C"
-               required
-               class="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm placeholder-slate-400 focus:border-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-600">
+  <div class="form-card form-card-wide">
+    <form method="post" class="form">
+      {% csrf_token %}
+      <div class="stack-md">
+        <div class="form-field">
+          <label class="form-label">Block</label>
+          <input
+            type="text"
+            name="block"
+            placeholder="A, B, C"
+            required
+            class="input"
+          >
+        </div>
+        <div class="form-field">
+          <label class="form-label">Room / hall</label>
+          <input
+            type="text"
+            name="name"
+            placeholder="A101"
+            required
+            class="input"
+          >
+        </div>
+        <div class="form-field">
+          <label class="form-label">Floor</label>
+          <input
+            type="text"
+            name="floor"
+            placeholder="G, 1, 2"
+            class="input"
+          >
+        </div>
+        <div class="form-field">
+          <label class="form-label">Capacity</label>
+          <input
+            type="number"
+            name="capacity"
+            min="0"
+            step="1"
+            value="0"
+            class="input"
+          >
+        </div>
       </div>
-      <div class="space-y-1.5 sm:col-span-1">
-        <label class="block text-sm font-medium text-slate-700">Room / hall</label>
-        <input type="text"
-               name="name"
-               placeholder="A101"
-               required
-               class="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm placeholder-slate-400 focus:border-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-600">
-      </div>
-      <div class="space-y-1.5 sm:col-span-1">
-        <label class="block text-sm font-medium text-slate-700">Floor</label>
-        <input type="text"
-               name="floor"
-               placeholder="G, 1, 2"
-               class="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm placeholder-slate-400 focus:border-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-600">
-      </div>
-      <div class="space-y-1.5 sm:col-span-1">
-        <label class="block text-sm font-medium text-slate-700">Capacity</label>
-        <input type="number"
-               name="capacity"
-               min="0"
-               step="1"
-               value="0"
-               class="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-600">
-      </div>
-    </div>
-    <div class="mt-4">
-      <button type="submit"
-              class="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
+      <button type="submit" class="btn btn-primary">
         Add room
       </button>
-    </div>
-  </form>
+    </form>
+  </div>
 
-  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
         <tr>
-          <th class="px-3 py-2">Block</th>
-          <th class="px-3 py-2">Room</th>
-          <th class="px-3 py-2">Floor</th>
-          <th class="px-3 py-2">Capacity</th>
-          <th class="px-3 py-2 text-right">Actions</th>
+          <th>Block</th>
+          <th>Room</th>
+          <th>Floor</th>
+          <th>Capacity</th>
+          <th class="text-right">Actions</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-100 bg-white">
+      <tbody>
         {% for hall in halls %}
           <tr>
-            <td class="px-3 py-2 text-slate-800">{{ hall.block }}</td>
-            <td class="px-3 py-2 text-slate-800">{{ hall.name }}</td>
-            <td class="px-3 py-2 text-slate-800">{{ hall.floor }}</td>
-            <td class="px-3 py-2 text-slate-800">{{ hall.capacity }}</td>
-            <td class="px-3 py-2">
-              <form method="post"
-                    class="flex justify-end"
-                    onsubmit="return confirm('Delete this room?');">
+            <td>{{ hall.block }}</td>
+            <td>{{ hall.name }}</td>
+            <td>{{ hall.floor }}</td>
+            <td>{{ hall.capacity }}</td>
+            <td>
+              <form
+                method="post"
+                class="table-actions"
+                onsubmit="return confirm('Delete this room?');"
+              >
                 {% csrf_token %}
                 <input type="hidden" name="delete_id" value="{{ hall.id }}">
-                <button type="submit"
-                        class="inline-flex items-center rounded-md border border-red-200 bg-white px-3 py-1 text-xs font-medium text-red-700 hover:bg-red-50">
+                <button type="submit" class="btn btn-danger btn-sm">
                   Delete
                 </button>
               </form>
@@ -89,7 +99,7 @@
           </tr>
         {% empty %}
           <tr>
-            <td colspan="5" class="px-3 py-6 text-center text-sm text-slate-500">
+            <td colspan="5" class="table-empty">
               No rooms defined yet.
             </td>
           </tr>

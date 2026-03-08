@@ -1,97 +1,104 @@
 {% extends 'base.html' %}
 
 {% block title %}Allocation Overview{% endblock %}
+{% block topbar_title %}Allocation Overview{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-4">
-  <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Allocation overview</h1>
+<div class="page-stack">
+  <div class="page-header">
+    <h1 class="page-title">Allocation overview</h1>
+  </div>
 
-  <form method="get"
-        class="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-3 max-w-xl">
-    <div class="space-y-1.5">
-      <label class="block text-sm font-medium text-slate-700" for="id_date">Exam date</label>
-      <select name="date"
-              id="id_date"
-              class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-600">
-        <option value="">All dates</option>
-        {% for d in dates %}
-          <option value="{{ d }}" {% if filter_date == d|stringformat:'s' %}selected{% endif %}>{{ d }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="space-y-1.5">
-      <label class="block text-sm font-medium text-slate-700" for="id_block">Block</label>
-      <select name="block"
-              id="id_block"
-              class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-primary-600 focus:outline-none focus:ring-1 focus:ring-primary-600">
-        <option value="">All blocks</option>
-        {% for b in blocks %}
-          <option value="{{ b }}" {% if filter_block == b %}selected{% endif %}>{{ b }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="flex items-end">
-      <button type="submit"
-              class="inline-flex w-full items-center justify-center rounded-md bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700">
-        Apply filters
-      </button>
+  <form
+    method="get"
+    class="card"
+    style="max-width: 720px;"
+  >
+    <div class="stack-md">
+      <div class="form-field">
+        <label class="form-label" for="id_date">Exam date</label>
+        <select
+          name="date"
+          id="id_date"
+          class="input"
+        >
+          <option value="">All dates</option>
+          {% for d in dates %}
+            <option value="{{ d }}" {% if filter_date == d|stringformat:'s' %}selected{% endif %}>{{ d }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="id_block">Block</label>
+        <select
+          name="block"
+          id="id_block"
+          class="input"
+        >
+          <option value="">All blocks</option>
+          {% for b in blocks %}
+            <option value="{{ b }}" {% if filter_block == b %}selected{% endif %}>{{ b }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <button type="submit" class="btn btn-primary">
+          Apply filters
+        </button>
+      </div>
     </div>
   </form>
 
-  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
         <tr>
-          <th class="px-3 py-2">Date</th>
-          <th class="px-3 py-2">Time</th>
-          <th class="px-3 py-2">Course</th>
-          <th class="px-3 py-2">Hall</th>
-          <th class="px-3 py-2">Block</th>
-          <th class="px-3 py-2">Faculty</th>
-          <th class="px-3 py-2">Dept</th>
-          <th class="px-3 py-2">Status</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Course</th>
+          <th>Hall</th>
+          <th>Block</th>
+          <th>Faculty</th>
+          <th>Dept</th>
+          <th>Status</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-100 bg-white">
+      <tbody>
         {% for a in assignments %}
           <tr>
-            <td class="px-3 py-2 whitespace-nowrap text-slate-800">
+            <td>
               {{ a.exam_session_hall.exam.exam_date }}
             </td>
-            <td class="px-3 py-2 whitespace-nowrap text-slate-800">
+            <td>
               {{ a.exam_session_hall.exam.start_time }} – {{ a.exam_session_hall.exam.end_time }}
             </td>
-            <td class="px-3 py-2">
-              <div class="text-sm font-medium text-slate-900">
-                {{ a.exam_session_hall.exam.course_code }}
-              </div>
-              <div class="text-xs text-slate-500">
+            <td>
+              <div>{{ a.exam_session_hall.exam.course_code }}</div>
+              <div class="table-cell-muted">
                 {{ a.exam_session_hall.exam.course_name }}
               </div>
             </td>
-            <td class="px-3 py-2 text-slate-800">{{ a.exam_session_hall.hall.name }}</td>
-            <td class="px-3 py-2 text-slate-800">{{ a.exam_session_hall.hall.block }}</td>
-            <td class="px-3 py-2">
-              <div class="text-sm text-slate-900">
-                {{ a.faculty.user.get_full_name|default:a.faculty.user.username }}
-              </div>
+            <td>{{ a.exam_session_hall.hall.name }}</td>
+            <td>{{ a.exam_session_hall.hall.block }}</td>
+            <td>
+              {{ a.faculty.user.get_full_name|default:a.faculty.user.username }}
             </td>
-            <td class="px-3 py-2 text-slate-800">{{ a.faculty.department.code }}</td>
-            <td class="px-3 py-2">
-              <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
-                {% if a.status == 'PENDING_CONFIRMATION' %}bg-amber-50 text-amber-700 ring-1 ring-amber-100
-                {% elif a.status == 'CONFIRMED' %}bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100
-                {% elif a.status == 'DECLINED' %}bg-red-50 text-red-700 ring-1 ring-red-100
-                {% elif a.status == 'CANCELLED' %}bg-slate-100 text-slate-700 ring-1 ring-slate-200
-                {% elif a.status == 'REASSIGNED' %}bg-sky-50 text-sky-700 ring-1 ring-sky-100
-                {% else %}bg-slate-50 text-slate-700 ring-1 ring-slate-100{% endif %}">
+            <td>{{ a.faculty.department.code }}</td>
+            <td>
+              <span class="badge
+                {% if a.status == 'PENDING_CONFIRMATION' %}badge-soft-amber
+                {% elif a.status == 'CONFIRMED' %}badge-soft-emerald
+                {% elif a.status == 'DECLINED' %}badge-soft-red
+                {% elif a.status == 'CANCELLED' %}badge-soft-slate
+                {% elif a.status == 'REASSIGNED' %}badge-soft-sky
+                {% else %}badge-soft-slate{% endif %}">
                 {{ a.status|title }}
               </span>
             </td>
           </tr>
         {% empty %}
           <tr>
-            <td colspan="8" class="px-3 py-6 text-center text-sm text-slate-500">
+            <td colspan="8" class="table-empty">
               No allocations found for the selected filters.
             </td>
           </tr>

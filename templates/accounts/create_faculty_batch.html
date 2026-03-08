@@ -1,49 +1,49 @@
 {% extends 'base.html' %}
 
 {% block title %}Create Faculty Profiles (Batch Mode){% endblock %}
+{% block topbar_title %}Batch Create Faculty{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-4">
-  <div>
-    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Create faculty profiles (batch)</h1>
-    <p class="mt-1 text-sm text-slate-600">
-      Enter faculty details row by row. New accounts and initial passwords will be generated and emailed automatically.
-    </p>
+<div class="page-stack">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Create faculty profiles (batch)</h1>
+      <p class="page-subtitle">
+        Enter faculty details row by row. New accounts and initial passwords will be generated and emailed automatically.
+      </p>
+    </div>
   </div>
 
-  <form id="batch-form" method="post" class="space-y-4">
+  <form id="batch-form" method="post" class="stack-md">
     {% csrf_token %}
     <input type="hidden" name="action" value="create">
 
-    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-      <table class="min-w-full text-xs" id="faculty-table" style="table-layout:auto; min-width: 900px;">
-        <thead class="bg-slate-50 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+    <div class="table-wrapper">
+      <table class="table" id="faculty-table" style="table-layout:auto; min-width: 900px;">
+        <thead>
           <tr>
-            <th class="px-2 py-2">Employee ID</th>
-            <th class="px-2 py-2">First name</th>
-            <th class="px-2 py-2">Last name</th>
-            <th class="px-2 py-2">Email</th>
-            <th class="px-2 py-2">Department</th>
-            <th class="px-2 py-2">Cabin block</th>
-            <th class="px-2 py-2">Cabin room</th>
-            <th class="px-2 py-2">Phone</th>
-            <th class="px-2 py-2"></th>
+            <th>Employee ID</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Cabin block</th>
+            <th>Cabin room</th>
+            <th>Phone</th>
+            <th></th>
           </tr>
         </thead>
-        <tbody id="faculty-tbody" class="divide-y divide-slate-100">
+        <tbody id="faculty-tbody">
           {% include 'accounts/partials/faculty_batch_row.html' with departments=departments row_index=0 only %}
         </tbody>
       </table>
     </div>
 
-    <div class="flex flex-wrap items-center justify-between gap-2">
-      <button type="button"
-              id="add-row-btn"
-              class="inline-flex items-center rounded-md border border-primary-200 bg-white px-3 py-1.5 text-xs sm:text-sm font-medium text-primary-700 hover:bg-primary-50">
+    <div class="justify-between">
+      <button type="button" id="add-row-btn" class="btn btn-outline btn-sm">
         Add faculty
       </button>
-      <button type="submit"
-              class="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-emerald-700">
+      <button type="submit" class="btn btn-primary btn-sm">
         Create faculty profiles
       </button>
     </div>

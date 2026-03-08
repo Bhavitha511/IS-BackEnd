@@ -1,104 +1,73 @@
 {% extends 'base.html' %}
 
 {% block title %}Faculty Dashboard{% endblock %}
+{% block topbar_title %}My Duties{% endblock %}
 
 {% block content %}
-<div class="flex flex-col gap-4">
-  <div class="flex flex-wrap items-center justify-between gap-3">
-    <div>
-      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">My invigilation duties</h1>
-      <p class="mt-1 text-sm text-slate-600">
-        View your upcoming exam duties and confirm your availability.
-      </p>
-    </div>
-    <div class="flex flex-wrap gap-2 text-xs sm:text-sm">
-      <a href="{% url 'timetable:faculty_timetable' %}"
-         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
-        View / edit my timetable
-      </a>
-      <a href="{% url 'leaves:my_leaves' %}"
-         class="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-700 hover:bg-slate-50">
-        My leaves
-      </a>
-    </div>
+<div class="page-stack">
+
+  <div>
+    <h1 class="page-title">My Invigilation Duties</h1>
+    <p class="page-subtitle">View your upcoming exam duties and confirm your availability.</p>
   </div>
 
-  <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-    <table class="min-w-full divide-y divide-slate-200 text-sm">
-      <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
         <tr>
-          <th class="px-3 py-2">Date</th>
-          <th class="px-3 py-2">Time</th>
-          <th class="px-3 py-2">Course</th>
-          <th class="px-3 py-2">Hall</th>
-          <th class="px-3 py-2">Block</th>
-          <th class="px-3 py-2">Status</th>
-          <th class="px-3 py-2 text-right">Actions</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Course</th>
+          <th>Hall</th>
+          <th>Block</th>
+          <th>Status</th>
+          <th class="text-right">Actions</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-slate-100 bg-white">
+      <tbody>
         {% for a in assignments %}
           <tr>
-            <td class="px-3 py-2 whitespace-nowrap text-slate-800">
-              {{ a.exam_session_hall.exam.exam_date }}
+            <td>{{ a.exam_session_hall.exam.exam_date }}</td>
+            <td>{{ a.exam_session_hall.exam.start_time }} – {{ a.exam_session_hall.exam.end_time }}</td>
+            <td>
+              <div>{{ a.exam_session_hall.exam.course_code }}</div>
+              <div class="table-cell-muted">{{ a.exam_session_hall.exam.course_name }}</div>
             </td>
-            <td class="px-3 py-2 whitespace-nowrap text-slate-800">
-              {{ a.exam_session_hall.exam.start_time }} – {{ a.exam_session_hall.exam.end_time }}
-            </td>
-            <td class="px-3 py-2">
-              <div class="text-sm font-medium text-slate-900">
-                {{ a.exam_session_hall.exam.course_code }}
-              </div>
-              <div class="text-xs text-slate-500">
-                {{ a.exam_session_hall.exam.course_name }}
-              </div>
-            </td>
-            <td class="px-3 py-2 text-slate-800">
-              {{ a.exam_session_hall.hall.name }}
-            </td>
-            <td class="px-3 py-2 text-slate-800">
-              {{ a.exam_session_hall.hall.block }}
-            </td>
-            <td class="px-3 py-2">
-              <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
-                {% if a.status == 'PENDING_CONFIRMATION' %}bg-amber-50 text-amber-700 ring-1 ring-amber-100
-                {% elif a.status == 'CONFIRMED' %}bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100
-                {% elif a.status == 'DECLINED' %}bg-red-50 text-red-700 ring-1 ring-red-100
-                {% elif a.status == 'CANCELLED' %}bg-slate-100 text-slate-700 ring-1 ring-slate-200
-                {% elif a.status == 'REASSIGNED' %}bg-sky-50 text-sky-700 ring-1 ring-sky-100
-                {% else %}bg-slate-50 text-slate-700 ring-1 ring-slate-100{% endif %}">
+            <td>{{ a.exam_session_hall.hall.name }}</td>
+            <td>{{ a.exam_session_hall.hall.block }}</td>
+            <td>
+              <span class="badge
+                {% if a.status == 'PENDING_CONFIRMATION' %}badge-soft-amber
+                {% elif a.status == 'CONFIRMED' %}badge-soft-emerald
+                {% elif a.status == 'DECLINED' %}badge-soft-red
+                {% elif a.status == 'CANCELLED' %}badge-soft-slate
+                {% elif a.status == 'REASSIGNED' %}badge-soft-sky
+                {% else %}badge-soft-slate{% endif %}">
                 {{ a.status|title }}
               </span>
             </td>
-            <td class="px-3 py-2">
+            <td>
               {% if a.status == 'PENDING_CONFIRMATION' %}
-                <div class="flex justify-end gap-2">
-                  <a href="{% url 'exams:confirm_assignment' a.pk %}"
-                     class="inline-flex items-center rounded-md bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-700">
-                    I will be available
-                  </a>
-                  <a href="{% url 'exams:decline_assignment' a.pk %}"
-                     class="inline-flex items-center rounded-md border border-red-200 bg-white px-3 py-1 text-xs font-medium text-red-700 hover:bg-red-50"
+                <div class="table-actions">
+                  <a href="{% url 'exams:confirm_assignment' a.pk %}" class="btn btn-success btn-sm">Confirm</a>
+                  <a href="{% url 'exams:decline_assignment' a.pk %}" class="btn btn-danger btn-sm"
                      onclick="return confirm('Are you sure you are not available for this duty?');">
-                    I am not available
+                    Decline
                   </a>
                 </div>
               {% else %}
-                <div class="text-right text-xs text-slate-400">
-                  No actions
-                </div>
+                <div class="text-right muted">—</div>
               {% endif %}
             </td>
           </tr>
         {% empty %}
           <tr>
-            <td colspan="7" class="px-3 py-6 text-center text-sm text-slate-500">
-              No upcoming invigilation duties.
-            </td>
+            <td colspan="7" class="table-empty">No upcoming invigilation duties.</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+
 </div>
 {% endblock %}
